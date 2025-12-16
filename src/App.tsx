@@ -1,81 +1,33 @@
-export interface IAssignee {
-  id: string;
-  firstName: string;
+import { useEffect, useState } from "react";
+import { getData } from "./data";
+import type { ITask } from "./data";
+
+function App() {
+  const [tasks, setTasks] = useState<ITask[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    async function load() {
+      const data = await getData();
+      setTasks(data);
+      setLoading(false);
+    }
+
+    load();
+  }, []);
+
+  if(loading) {
+    return <div>Getting tasks...</div>;
+  }
+
+
+  return (
+    <div>
+      <h1>Task Board</h1>
+      <p>total tasks: {tasks.length}</p>
+    </div>
+
+  );
 }
 
-export interface ITask {
-  id: string;
-  title: string;
-  assignee: IAssignee | undefined;
-  isCompleted: boolean;
-}
-
-const JANE: IAssignee = { id: "jane", firstName: "Jane" };
-const BOB: IAssignee = { id: "bob", firstName: "Bob" };
-
-const TASKS: ITask[] = [
-  {
-    id: "1",
-    title: "Walk the dog",
-    assignee: undefined,
-    isCompleted: false,
-  },
-  {
-    id: "2",
-    title: "Buy groceries",
-    assignee: JANE,
-    isCompleted: true,
-  },
-  {
-    id: "3",
-    title: "Mow the lawn",
-    assignee: JANE,
-    isCompleted: false,
-  },
-  {
-    id: "4",
-    title: "Bake cookies",
-    assignee: BOB,
-    isCompleted: true,
-  },
-  {
-    id: "5",
-    title: "Vacuum",
-    assignee: JANE,
-    isCompleted: false,
-  },
-  {
-    id: "6",
-    title: "Take out the recycling",
-    assignee: JANE,
-    isCompleted: false,
-  },
-  {
-    id: "7",
-    title: "Call the plumber",
-    assignee: BOB,
-    isCompleted: false,
-  },
-  {
-    id: "8",
-    title: "Fix cabinet door",
-    assignee: BOB,
-    isCompleted: false,
-  },
-  {
-    id: "9",
-    title: "Plant tulip bulbs",
-    assignee: BOB,
-    isCompleted: false,
-  },
-  {
-    id: "10",
-    title: "Rake leaves",
-    assignee: undefined,
-    isCompleted: false,
-  },
-];
-
-export async function getData(): Promise<ITask[]> {
-  return new Promise((resolve) => setTimeout(() => resolve(TASKS), 5000));
-}
+export default App;
