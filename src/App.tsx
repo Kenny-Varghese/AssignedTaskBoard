@@ -18,6 +18,16 @@ function groupTasksByAssigned(tasks: ITask[]): GroupedTasks{
   return grouped;
 }
 
+//sort by completion and then alphabetically
+function sortTasksByCompletion(tasks: ITask[]): ITask[] {
+  return tasks.slice().sort((a, b) => {
+    if(a.isCompleted === b.isCompleted){
+      return a.title.localeCompare(b.title);
+    }
+    return a.isCompleted ? 1 : -1;
+  });
+}
+
 function App() {
   const [tasks, setTasks] = useState<ITask[]>([]);
   const [loading, setLoading] = useState(true);
@@ -46,9 +56,9 @@ function App() {
       <div className="columns">
           {Object.entries(groupedTasks).map(([assignee, taskList]) => (
             <div key={assignee} className="assignee-box">
-              <h2>{assignee}</h2>
+              <h2>{assignee} ({taskList.filter(t => !t.isCompleted).length}/{taskList.length} remaining)</h2>
               <ul className="task-list">
-                {taskList.map((task) => (
+                {sortTasksByCompletion(taskList).map((task) => (
                   <li key={task.id} className={`task-item ${task.isCompleted ? "completed" : ""}`}>
                     {task.title}
                   </li>
