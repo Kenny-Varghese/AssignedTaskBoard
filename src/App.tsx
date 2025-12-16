@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getData } from "./data";
 import type { ITask } from "./data";
+import "./App.css";
 
 type GroupedTasks = Record<string, ITask[]>;
 
@@ -38,18 +39,18 @@ function App() {
   const groupedTasks = groupTasksByAssigned(tasks);
 
   return (
-    <div>
+    <div className="app">
       <h1>Task Board</h1>
       <p>total tasks: {tasks.length}</p>
       
       <div className="columns">
           {Object.entries(groupedTasks).map(([assignee, taskList]) => (
-            <div key={assignee}>
+            <div key={assignee} className="assignee-box">
               <h2>{assignee}</h2>
               <ul className="task-list">
                 {taskList.map((task) => (
-                  <li key={task.id}>
-                    {task.title} {task.isCompleted ? " | done" : ""}
+                  <li key={task.id} className={`task-item ${task.isCompleted ? "completed" : ""}`}>
+                    {task.title}
                   </li>
                 ))}
               </ul>
