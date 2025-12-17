@@ -1,13 +1,20 @@
 export interface IAssignee {
   id: string;
   firstName: string;
+  lastName?: string;
+  jobRole?: string;
+  isAdmin?: boolean;
 }
 
 export interface ITask {
   id: string;
   title: string;
   assignee: IAssignee | undefined;
+  secondaryAssignee?: IAssignee[] | undefined;
   isCompleted: boolean;
+  category?: string;
+  percentageCompleted?: number;
+  priority?: number;
 }
 
 const JANE: IAssignee = { id: "jane", firstName: "Jane" };
@@ -77,5 +84,5 @@ const TASKS: ITask[] = [
 ];
 
 export async function getData(): Promise<ITask[]> {
-  return new Promise((resolve) => setTimeout(() => resolve(TASKS), 5000));
+  return new Promise((resolve) => setTimeout(() => resolve(TASKS), 1000));
 }

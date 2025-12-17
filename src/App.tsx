@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getData } from "./data";
 import type { ITask } from "./data";
 import "./App.css";
@@ -9,7 +9,7 @@ function groupTasksByAssigned(tasks: ITask[]): GroupedTasks{
   const grouped: GroupedTasks = {};
 
   for(const task of tasks) {
-    const assigneeName = task.assignee ? task.assignee.firstName : "Not Assigned";
+    const assigneeName = task.assignee ? task.assignee.id : "Not Assigned";
     if(!grouped[assigneeName]) grouped[assigneeName] = [];
 
     grouped[assigneeName].push(task);
@@ -41,12 +41,12 @@ function App() {
 
     load();
   }, []);
+  
+  const groupedTasks = useMemo(() => groupTasksByAssigned(tasks), [tasks]);
 
   if(loading) {
-    return <div>Getting tasks...</div>;
+    return <div className="loading">Getting tasks...</div>;
   }
-
-  const groupedTasks = groupTasksByAssigned(tasks);
 
   return (
     <div className="app">
@@ -56,7 +56,7 @@ function App() {
       <div className="columns">
           {Object.entries(groupedTasks).map(([assignee, taskList]) => (
             <div key={assignee} className="assignee-box">
-              <h2>{assignee} ({taskList.filter(t => !t.isCompleted).length}/{taskList.length} remaining)</h2>
+              <h2>{taskList[0].assignee?.firstName ?? "Not Assigned"} ({taskList.filter(t => !t.isCompleted).length}/{taskList.length} remaining)</h2>
               <ul className="task-list">
                 {sortTasksByCompletion(taskList).map((task) => (
                   <li key={task.id} className={`task-item ${task.isCompleted ? "completed" : ""}`}>
